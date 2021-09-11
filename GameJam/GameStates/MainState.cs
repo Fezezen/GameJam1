@@ -9,11 +9,10 @@ namespace GameJam.GameStates
     {
         public List<Entity> entities;
         public int[,] tiles;
-        public int tileSize = 64;
+        public int tileSize = 32;
         public Point gridSize;
 
         public Texture2D texture;
-        public Rectangle rect;
 
         public override void Initalize()
         {
@@ -22,20 +21,19 @@ namespace GameJam.GameStates
                 new Player(new Vector2(64,64))
             };
 
-            gridSize = new Point(16, 9);
+            gridSize = new Point(32, 18);
             tiles = new int[gridSize.X,gridSize.Y];
-            for (int i = 0; i < 16; i++)
-                tiles[i, 8] = 1;
+            for (int i = 0; i < gridSize.X; i++)
+                tiles[i, gridSize.Y-1] = 1;
 
-            tiles[6, 7] = 1;
-            tiles[6, 4] = 1;
+            tiles[6, 16] = 1;
 
-            tiles[15, 7] = 1;
-            tiles[15, 6] = 1;
-            tiles[15, 5] = 1;
-            tiles[15, 4] = 1;
+            tiles[20, 16] = 1;
+            tiles[20, 15] = 1;
 
-            rect = new Rectangle(0, 300, 500, 3000);
+            tiles[15, 15] = 2;
+            tiles[16, 15] = 2;
+            tiles[14, 15] = 2;
         }
 
         public override void LoadContent(GraphicsDevice graphicsDevice)
@@ -86,13 +84,20 @@ namespace GameJam.GameStates
                 entities[i].Draw(spriteBatch);
             }
 
-            for (int x = 0; x < 16; x++)
+            for (int x = 0; x < gridSize.X; x++)
             {
-                for (int y = 0; y < 9; y++)
+                for (int y = 0; y < gridSize.Y; y++)
                 {
-                    if (tiles[x,y] == 1)
+                    switch(tiles[x,y])
                     {
-                        spriteBatch.Draw(texture, new Vector2(x * tileSize, y * tileSize), Color.White);
+                        case 1:
+                            spriteBatch.Draw(texture, new Vector2(x * tileSize, y * tileSize), Color.White);
+                            break;
+                        case 2:
+                            spriteBatch.Draw(texture, new Vector2(x * tileSize, y * tileSize), Color.Blue);
+                            break;
+                        default:
+                            break;
                     }
                 }
             }

@@ -64,7 +64,7 @@ namespace GameJam.Objects
             {
                 for (int x = Math.Max(leftTile, 0); x <= Math.Min(rightTile, gameState.gridSize.X - 1); x++)
                 {
-                    if (gameState.tiles[x, y] == 1)
+                    if (gameState.tiles[x, y] > 0)
                     {
                         Rectangle rect = new Rectangle(new Point(x * gameState.tileSize, y * gameState.tileSize), new Point(gameState.tileSize, gameState.tileSize));
                         tileRects.Add(rect);
@@ -96,7 +96,19 @@ namespace GameJam.Objects
 
                     if (allow)
                     {
-                        velocity += normal * new Vector2(Math.Abs(velocity.X), Math.Abs(velocity.Y)) * (1.0f - time);
+                        switch (gameState.tiles[tPos.X,tPos.Y])
+                        {
+                            case 1:
+                                velocity += normal * new Vector2(Math.Abs(velocity.X), Math.Abs(velocity.Y)) * (1.0f - time);
+                                break;
+                            case 2:
+                                if (normal.Y == -1)
+                                    velocity += normal * new Vector2(Math.Abs(velocity.X), Math.Abs(velocity.Y)) * (1.0f - time);
+                                break;
+                            default:
+                                break;
+                        }
+
                         if (normal.Y == -1) // if the normal is pointing up, it's the ground
                             isGrounded = true;
                     }

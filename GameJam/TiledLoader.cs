@@ -18,7 +18,8 @@ namespace GameJam
 
                 D_Map d_Map = JsonConvert.DeserializeObject<D_Map>(json);
 
-                Texture2D[] tileTextures = LoadTiles(d_Map);
+                //Texture2D[] tileTextures = LoadTiles(d_Map);
+                Color[][] tileTextures = LoadTiles(d_Map);
 
                 Map map = new Map(d_Map.width, d_Map.height);
 
@@ -39,8 +40,8 @@ namespace GameJam
                                         int i = layer.data[x + layer.width * y];
                                         if (i != 0)
                                         {
-                                            Texture2D tile = tileTextures[i - 1]; // subtract given index by 1 because 0 is empty space
-                                            PlaceTileOnColorData(ref tile, ref colorData, x, y, texture.Width, texture.Height);
+                                            //Texture2D tile = tileTextures[i - 1]; // subtract given index by 1 because 0 is empty space
+                                            PlaceTileOnColorData(ref tileTextures[i-1], d_Map.tileWidth, d_Map.tileHeight, ref colorData, x, y, texture.Width, texture.Height);
                                         }
                                     }
                                 }
@@ -66,14 +67,14 @@ namespace GameJam
             return null;
         }
 
-        private static Texture2D[] LoadTiles(D_Map d_Map)
+        private static Color[][] LoadTiles(D_Map d_Map)
         {
             int n_tiles = 0;
             foreach (D_Tileset d_Tileset in d_Map.tilesets)
                 if (d_Tileset.name != "CollisionSet")
                     n_tiles += d_Tileset.tilecount;
 
-            Texture2D[] tileTextures = new Texture2D[n_tiles];
+            Color[][] tileTextures = new Color[n_tiles][];
 
             foreach (D_Tileset d_Tileset in d_Map.tilesets)
             {
@@ -91,7 +92,7 @@ namespace GameJam
                     {
                         for (int x = 0; x < d_Tileset.columns; x++)
                         {
-                            Texture2D tileTexture = new Texture2D(Program.Engine.GraphicsDevice, d_Map.tileWidth, d_Map.tileHeight);
+                            //Texture2D tileTexture = new Texture2D(Program.Engine.GraphicsDevice, d_Map.tileWidth, d_Map.tileHeight);
                             Color[] tColor = new Color[d_Map.tileWidth * d_Map.tileHeight];
 
                             for (int tx = 0; tx < d_Map.tileWidth; tx++)
@@ -103,8 +104,9 @@ namespace GameJam
                                     tColor[tx + d_Map.tileWidth * ty] = tilesetColor[cx + tilesetImage.Width * cy];
                                 }
                             }
-                            tileTexture.SetData(tColor);
-                            tileTextures[i] = tileTexture;
+                            tileTextures[i] = tColor;
+                            //tileTexture.SetData(tColor);
+                            //tileTextures[i] = tileTexture;
                             i++;
                         }
                     }
@@ -114,19 +116,19 @@ namespace GameJam
             return tileTextures;
         }
 
-        private static void PlaceTileOnColorData(ref Texture2D tile, ref Color[] color, int px, int py, int imageWidth, int imageHeight)
+        private static void PlaceTileOnColorData(ref Color[] tile, int tileWidth, int tileHeight, ref Color[] color, int px, int py, int imageWidth, int imageHeight)
         {
-            Color[] tileColor = new Color[tile.Width * tile.Height];
-            tile.GetData(tileColor);
+            //Color[] tileColor = new Color[tileWidth * tileHeight];
+            //tile.GetData(tileColor);
 
-            for (int x = 0; x < tile.Width; x++)
+            for (int x = 0; x < tileWidth; x++)
             {
-                for (int y = 0; y < tile.Height; y++)
+                for (int y = 0; y < tileHeight; y++)
                 {
-                    int cx = px * tile.Width + x;
-                    int cy = py * tile.Height + y;
+                    int cx = px * tileWidth + x;
+                    int cy = py * tileHeight + y;
 
-                    color[cx + imageWidth * cy] = tileColor[x + tile.Width * y];
+                    color[cx + imageWidth * cy] = tile[x + tileWidth * y];
                 }
             }
         }

@@ -24,24 +24,37 @@ namespace GameJam
 
                 foreach (D_Layer layer in d_Map.layers)
                 {
-                    Texture2D texture = new Texture2D(Program.Engine.GraphicsDevice, d_Map.width * d_Map.tileWidth, d_Map.height * d_Map.tileHeight);
-                    Color[] colorData = new Color[d_Map.width * d_Map.tileWidth * d_Map.height * d_Map.tileHeight];
-
-                    for (int x = 0; x < layer.width; x++)
+                    switch (layer.type)
                     {
-                        for (int y = 0; y < layer.height; y++)
-                        {
-                            int i = layer.data[x + layer.width * y];
-                            if (i != 0)
+                        case "tilelayer":
+                            if (layer.name != "_Collision")
                             {
-                                Texture2D tile = tileTextures[i - 1]; // subtract given index by 1 because 0 is empty space
-                                PlaceTileOnColorData(ref tile, ref colorData, x, y, texture.Width, texture.Height);
-                            }
-                        }
-                    }
+                                Texture2D texture = new Texture2D(Program.Engine.GraphicsDevice, d_Map.width * d_Map.tileWidth, d_Map.height * d_Map.tileHeight);
+                                Color[] colorData = new Color[d_Map.width * d_Map.tileWidth * d_Map.height * d_Map.tileHeight];
 
-                    texture.SetData(colorData);
-                    map.AddLayerImage(texture);
+                                for (int x = 0; x < layer.width; x++)
+                                {
+                                    for (int y = 0; y < layer.height; y++)
+                                    {
+                                        int i = layer.data[x + layer.width * y];
+                                        if (i != 0)
+                                        {
+                                            Texture2D tile = tileTextures[i - 1]; // subtract given index by 1 because 0 is empty space
+                                            PlaceTileOnColorData(ref tile, ref colorData, x, y, texture.Width, texture.Height);
+                                        }
+                                    }
+                                }
+
+                                texture.SetData(colorData);
+                                map.AddLayerImage(texture);
+                            } else
+                            {
+                                SetUpCollision(ref d_Map, layer, ref map);
+                            }
+                            break;
+                        default:
+                            break;
+                    }
                 }
                 
                 return map;
@@ -57,40 +70,43 @@ namespace GameJam
         {
             int n_tiles = 0;
             foreach (D_Tileset d_Tileset in d_Map.tilesets)
-                n_tiles += d_Tileset.tilecount;
+                if (d_Tileset.name != "CollisionSet")
+                    n_tiles += d_Tileset.tilecount;
 
             Texture2D[] tileTextures = new Texture2D[n_tiles];
 
             foreach (D_Tileset d_Tileset in d_Map.tilesets)
             {
-                string t_dir = d_Tileset.image.Substring(3, d_Tileset.image.Length-7);
-                System.Console.WriteLine(t_dir);
-                Texture2D tilesetImage = Program.Engine.Content.Load<Texture2D>(t_dir);                
-                Color[] tilesetColor = new Color[tilesetImage.Width* tilesetImage.Height];
-                tilesetImage.GetData(tilesetColor);
-                int rows = (d_Tileset.tilecount/d_Tileset.columns); // number of rows in the texture
-
-                int i = d_Tileset.firstgid - 1; //-1 because ID 0 is always clear space, and therefore not needed;
-
-                for (int y = 0; y < rows; y++) // run across row by row, not column by column. 
+                if (d_Tileset.name != "CollisionSet")
                 {
-                    for (int x = 0; x < d_Tileset.columns; x++)
-                    {
-                        Texture2D tileTexture = new Texture2D(Program.Engine.GraphicsDevice,d_Map.tileWidth,d_Map.tileHeight);
-                        Color[] tColor = new Color[d_Map.tileWidth * d_Map.tileHeight];
+                    string t_dir = d_Tileset.image.Substring(3, d_Tileset.image.Length - 7);
+                    Texture2D tilesetImage = Program.Engine.Content.Load<Texture2D>(t_dir);
+                    Color[] tilesetColor = new Color[tilesetImage.Width * tilesetImage.Height];
+                    tilesetImage.GetData(tilesetColor);
+                    int rows = (d_Tileset.tilecount / d_Tileset.columns); // number of rows in the texture
 
-                        for (int tx = 0; tx < d_Map.tileWidth; tx++)
+                    int i = d_Tileset.firstgid - 1; //-1 because ID 0 is always clear space, and therefore not needed;
+
+                    for (int y = 0; y < rows; y++) // run across row by row, not column by column. 
+                    {
+                        for (int x = 0; x < d_Tileset.columns; x++)
                         {
-                            for (int ty = 0; ty < d_Map.tileWidth; ty++)
+                            Texture2D tileTexture = new Texture2D(Program.Engine.GraphicsDevice, d_Map.tileWidth, d_Map.tileHeight);
+                            Color[] tColor = new Color[d_Map.tileWidth * d_Map.tileHeight];
+
+                            for (int tx = 0; tx < d_Map.tileWidth; tx++)
                             {
-                                int cx = x * d_Map.tileWidth + tx;
-                                int cy = y * d_Map.tileHeight + ty;
-                                tColor[tx + d_Map.tileWidth * ty] = tilesetColor[cx + tilesetImage.Width * cy];
+                                for (int ty = 0; ty < d_Map.tileWidth; ty++)
+                                {
+                                    int cx = x * d_Map.tileWidth + tx;
+                                    int cy = y * d_Map.tileHeight + ty;
+                                    tColor[tx + d_Map.tileWidth * ty] = tilesetColor[cx + tilesetImage.Width * cy];
+                                }
                             }
+                            tileTexture.SetData(tColor);
+                            tileTextures[i] = tileTexture;
+                            i++;
                         }
-                        tileTexture.SetData(tColor);
-                        tileTextures[i] = tileTexture;
-                        i++;
                     }
                 }
             }
@@ -114,9 +130,26 @@ namespace GameJam
                 }
             }
         }
+
+        private static void SetUpCollision(ref D_Map d_Map, D_Layer layer, ref Map map)
+        {
+            if (d_Map.tilesets.Exists(t => t.name == "CollisionSet"))
+            {
+                D_Tileset colSet = d_Map.tilesets.Find(t => t.name == "CollisionSet");
+
+                for (int x = 0; x < layer.width; x++)
+                {
+                    for (int y = 0; y < layer.height; y++)
+                    {
+                        int i = layer.data[x + layer.width * y] - colSet.tilecount;
+                        map.grid[x, y] = i;
+                    }
+                }
+            }
+        }
     }
 
-    class D_Map
+    struct D_Map
     {
         public int width;
         public int height;
@@ -125,21 +158,23 @@ namespace GameJam
 
         public List<D_Tileset> tilesets;
         public List<D_Layer> layers;
-    } 
+    }
 
-    class D_Tileset
+    struct D_Tileset
     {
         public int columns;
         public int firstgid;
         public string image;
         public int tilecount;
+        public string name;
     }
 
-    class D_Layer
+    struct D_Layer
     {
         public int[] data;
         public int width;
         public int height;
         public string name;
+        public string type;
     }
 }

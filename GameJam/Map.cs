@@ -9,6 +9,7 @@ namespace GameJam
         public readonly int width;
         public readonly int height;
         private List<Texture2D> layerImages;
+        public int[,] grid;
 
         public Map(int w, int h)
         {
@@ -16,6 +17,7 @@ namespace GameJam
             height = h;
 
             layerImages = new List<Texture2D>();
+            grid = new int[w, h];
         }
 
         public void AddLayerImage(Texture2D image)

@@ -27,8 +27,9 @@ namespace GameJam.GameStates
 
             gridSize = new Point(map.width,map.height);
             tiles = new int[gridSize.X,gridSize.Y];
-            
 
+            if (map != null)
+                tiles = map.grid;
         }
 
         public override void LoadContent(GraphicsDevice graphicsDevice)

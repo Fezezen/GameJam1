@@ -14,26 +14,21 @@ namespace GameJam.GameStates
 
         public Texture2D texture;
 
+        Map map;
+
         public override void Initalize()
         {
+            map = TiledLoader.LoadMap("TestLevel.json");
+
             entities = new List<Entity>
             {
                 new Player(new Vector2(64,64))
             };
 
-            gridSize = new Point(32, 18);
+            gridSize = new Point(map.width,map.height);
             tiles = new int[gridSize.X,gridSize.Y];
-            for (int i = 0; i < gridSize.X; i++)
-                tiles[i, gridSize.Y-1] = 1;
+            
 
-            tiles[6, 16] = 1;
-
-            tiles[20, 16] = 1;
-            tiles[20, 15] = 1;
-
-            tiles[15, 15] = 2;
-            tiles[16, 15] = 2;
-            tiles[14, 15] = 2;
         }
 
         public override void LoadContent(GraphicsDevice graphicsDevice)
@@ -84,7 +79,7 @@ namespace GameJam.GameStates
                 entities[i].Draw(spriteBatch);
             }
 
-            for (int x = 0; x < gridSize.X; x++)
+            /*for (int x = 0; x < gridSize.X; x++)
             {
                 for (int y = 0; y < gridSize.Y; y++)
                 {
@@ -100,9 +95,11 @@ namespace GameJam.GameStates
                             break;
                     }
                 }
-            }
+            }*/
 
             //spriteBatch.Draw(texture, rect, Color.White);
+            if (map != null)
+                map.Draw(spriteBatch);
 
             spriteBatch.End();
         }

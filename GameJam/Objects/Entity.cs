@@ -17,6 +17,7 @@ namespace GameJam.Objects
         protected Rectangle bounds;
         protected bool isGrounded;
         protected GameStates.MainState gameState;
+        protected Dictionary<int, Action> collisionCallbacks;
 
         public bool gravityOn;
 
@@ -28,6 +29,8 @@ namespace GameJam.Objects
             gravityOn = grav;
 
             gameState = (GameStates.MainState)Program.Engine.gameState;
+
+            collisionCallbacks = new Dictionary<int, Action>();
         }
 
         public abstract void LoadContent(GraphicsDevice graphicsDevice);
@@ -105,7 +108,10 @@ namespace GameJam.Objects
                                 if (normal.Y == -1)
                                     velocity += normal * new Vector2(Math.Abs(velocity.X), Math.Abs(velocity.Y)) * (1.0f - time);
                                 break;
-                            default:
+                            default:                                
+                                if (collisionCallbacks.ContainsKey(gameState.tiles[tPos.X, tPos.Y]))
+                                    collisionCallbacks[gameState.tiles[tPos.X, tPos.Y]]();
+                                velocity += normal * new Vector2(Math.Abs(velocity.X), Math.Abs(velocity.Y)) * (1.0f - time);
                                 break;
                         }
 

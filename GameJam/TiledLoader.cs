@@ -19,7 +19,7 @@ namespace GameJam
                 D_Map d_Map = JsonConvert.DeserializeObject<D_Map>(json);
 
                 //Texture2D[] tileTextures = LoadTiles(d_Map);
-                Color[][] tileTextures = LoadTiles(d_Map);
+                Dictionary<int, Color[]> tileTextures = LoadTiles(d_Map);
 
                 Map map = new Map(d_Map.width, d_Map.height);
 
@@ -41,7 +41,7 @@ namespace GameJam
                                         if (i != 0)
                                         {
                                             //Texture2D tile = tileTextures[i - 1]; // subtract given index by 1 because 0 is empty space
-                                            PlaceTileOnColorData(ref tileTextures[i-1], d_Map.tileWidth, d_Map.tileHeight, ref colorData, x, y, texture.Width, texture.Height);
+                                            PlaceTileOnColorData(tileTextures[i-1], d_Map.tileWidth, d_Map.tileHeight, ref colorData, x, y, texture.Width, texture.Height);
                                         }
                                     }
                                 }
@@ -49,7 +49,7 @@ namespace GameJam
                                 texture.SetData(colorData);
                                 map.AddLayerImage(texture);
                             } else
-                            {
+                            {                                
                                 SetUpCollision(ref d_Map, layer, ref map);
                             }
                             break;
@@ -67,14 +67,15 @@ namespace GameJam
             return null;
         }
 
-        private static Color[][] LoadTiles(D_Map d_Map)
+        private static Dictionary<int, Color[]> LoadTiles(D_Map d_Map)
         {
-            int n_tiles = 0;
-            foreach (D_Tileset d_Tileset in d_Map.tilesets)
+            //int n_tiles = 0;
+            /*foreach (D_Tileset d_Tileset in d_Map.tilesets)
                 if (d_Tileset.name != "CollisionSet")
-                    n_tiles += d_Tileset.tilecount;
+                    n_tiles += (d_Tileset.tilecount+d_Tileset.firstgid)-1;*/
 
-            Color[][] tileTextures = new Color[n_tiles][];
+            //Color[][] tileTextures = new Color[n_tiles][];
+            Dictionary<int, Color[]> tileTextures = new Dictionary<int, Color[]>();
 
             foreach (D_Tileset d_Tileset in d_Map.tilesets)
             {
@@ -104,6 +105,7 @@ namespace GameJam
                                     tColor[tx + d_Map.tileWidth * ty] = tilesetColor[cx + tilesetImage.Width * cy];
                                 }
                             }
+
                             tileTextures[i] = tColor;
                             //tileTexture.SetData(tColor);
                             //tileTextures[i] = tileTexture;
@@ -116,7 +118,7 @@ namespace GameJam
             return tileTextures;
         }
 
-        private static void PlaceTileOnColorData(ref Color[] tile, int tileWidth, int tileHeight, ref Color[] color, int px, int py, int imageWidth, int imageHeight)
+        private static void PlaceTileOnColorData(Color[] tile, int tileWidth, int tileHeight, ref Color[] color, int px, int py, int imageWidth, int imageHeight)
         {
             //Color[] tileColor = new Color[tileWidth * tileHeight];
             //tile.GetData(tileColor);
@@ -134,16 +136,17 @@ namespace GameJam
         }
 
         private static void SetUpCollision(ref D_Map d_Map, D_Layer layer, ref Map map)
-        {
+        {            
             if (d_Map.tilesets.Exists(t => t.name == "CollisionSet"))
             {
                 D_Tileset colSet = d_Map.tilesets.Find(t => t.name == "CollisionSet");
-
+                int max = colSet.firstgid-1;
+                
                 for (int x = 0; x < layer.width; x++)
                 {
                     for (int y = 0; y < layer.height; y++)
                     {
-                        int i = layer.data[x + layer.width * y] - colSet.tilecount;
+                        int i = layer.data[x + layer.width * y] - max;
                         map.grid[x, y] = i;
                     }
                 }

@@ -23,7 +23,7 @@ namespace GameJam.Objects
 
         public Player(Vector2 _position) : base(_position, size, true)
         {
-
+            collisionCallbacks.Add(3, SpikeHit);
         }
 
         public override void LoadContent(GraphicsDevice graphicsDevice)
@@ -96,6 +96,11 @@ namespace GameJam.Objects
             isGrounded = false;
             position.Y--; // avoids weird bug, ik it's not a good fix
             velocity.Y -= jumpForce;
+        }
+
+        public void SpikeHit()
+        {
+            
         }
 
         public override void Draw(SpriteBatch spriteBatch)

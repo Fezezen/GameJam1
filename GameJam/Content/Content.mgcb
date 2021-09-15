@@ -13,6 +13,9 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin Levels/Level1.json
+/copy:Levels/Level1.json
+
 #begin Levels/TestLevel.json
 /copy:Levels/TestLevel.json
 

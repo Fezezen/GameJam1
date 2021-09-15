@@ -21,7 +21,7 @@ namespace GameJam
                 //Texture2D[] tileTextures = LoadTiles(d_Map);
                 Dictionary<int, Color[]> tileTextures = LoadTiles(d_Map);
 
-                Map map = new Map(d_Map.width, d_Map.height);
+                Map map = new Map(d_Map.width, d_Map.height, d_Map.tileWidth);
 
                 foreach (D_Layer layer in d_Map.layers)
                 {

@@ -6,18 +6,21 @@ namespace GameJam
 {
     public class Map
     {
+        public Matrix Transform { get; private set; }
         public readonly int width;
         public readonly int height;
+        public int tilesize;
         private List<Texture2D> layerImages;
         public int[,] grid;
 
-        public Map(int w, int h)
+        public Map(int w, int h, int tileSize)
         {
             width = w;
             height = h;
 
             layerImages = new List<Texture2D>();
             grid = new int[w, h];
+            tilesize = tileSize;
         }
 
         public void AddLayerImage(Texture2D image)

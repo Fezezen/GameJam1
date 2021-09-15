@@ -47,6 +47,7 @@
     <Compile Include="GameStates\MainState.cs" />
     <Compile Include="InputManager.cs" />
     <Compile Include="Map.cs" />
+    <Compile Include="Objects\Camera.cs" />
     <Compile Include="Objects\Entity.cs" />
     <Compile Include="Objects\Player.cs" />
     <Compile Include="Program.cs" />

@@ -15,10 +15,12 @@ namespace GameJam.GameStates
         public Texture2D texture;
 
         Map map;
+        Camera camera;
+        public Rectangle mapRect;
 
         public override void Initalize()
         {
-            map = TiledLoader.LoadMap("TestLevel.json");
+            map = TiledLoader.LoadMap("Level1.json");
 
             entities = new List<Entity>
             {
@@ -27,6 +29,9 @@ namespace GameJam.GameStates
 
             gridSize = new Point(map.width,map.height);
             tiles = new int[gridSize.X,gridSize.Y];
+            mapRect = new Rectangle(new Point(), new Point(gridSize.X * map.tilesize, gridSize.Y * map.tilesize));
+
+            camera = new Camera();
 
             if (map != null)
                 tiles = map.grid;
@@ -36,20 +41,6 @@ namespace GameJam.GameStates
         {
             foreach (Entity entity in entities)
                 entity.LoadContent(graphicsDevice);
-
-            texture = new Texture2D(graphicsDevice, tileSize, tileSize);
-            Color[] data = new Color[tileSize * tileSize];
-            for (int i = 0; i < tileSize * tileSize; i++)
-            {
-                int x = i % tileSize;
-                int y = i / tileSize;
-                if ((x == 0 || x == tileSize - 1) || (y == 0 || y == tileSize - 1))
-                    data[i] = Color.Black;
-                else
-                    data[i] = Color.White;
-            }
-            
-            texture.SetData(data);
         }
 
         public override void UnloadContent()
@@ -69,11 +60,13 @@ namespace GameJam.GameStates
             {
                 entities[i].Update(deltaTime);
             }
+
+            camera.Update(deltaTime);
         }
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Begin();
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, camera.Transform);
 
             for (int i = entities.Count - 1; i >= 0; i--)
             {

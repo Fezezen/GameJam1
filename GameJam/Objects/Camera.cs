@@ -8,7 +8,8 @@ namespace GameJam.Objects
     public class Camera
     {
         public Matrix Transform { get; private set; }
-        public Vector2 position;        
+        public Vector2 position;
+        public Vector2 target;
         public Vector2 size;
         private Player player;
 
@@ -32,10 +33,12 @@ namespace GameJam.Objects
             Vector2 projectedYU = center - Vector2.UnitY * size.Y/2;
 
             if (gameState.mapRect.Contains(projectedX) && gameState.mapRect.Contains(projectedXL))
-                position.X = center.X- size.X / 2;
+                target.X = center.X- size.X / 2;
 
             if (gameState.mapRect.Contains(projectedY) && gameState.mapRect.Contains(projectedYU))
-                position.Y = center.Y - size.Y / 2;
+                target.Y = center.Y - size.Y / 2;
+
+            position = Vector2.Lerp(position, target, deltaTime * 10);
 
             Transform = Matrix.CreateTranslation(
             -position.X,

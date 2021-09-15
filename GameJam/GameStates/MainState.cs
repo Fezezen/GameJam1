@@ -15,7 +15,7 @@ namespace GameJam.GameStates
         public Texture2D texture;
 
         Map map;
-        Camera camera;
+        public Camera camera;
         public Rectangle mapRect;
 
         public override void Initalize()
@@ -35,6 +35,8 @@ namespace GameJam.GameStates
 
             if (map != null)
                 tiles = map.grid;
+
+            Delay.delays.Clear();
         }
 
         public override void LoadContent(GraphicsDevice graphicsDevice)
@@ -56,6 +58,11 @@ namespace GameJam.GameStates
 
         public override void Update(float deltaTime)
         {
+            for (int i = Delay.delays.Count-1; i >= 0; i--)
+            {
+                Delay.delays[i].Update(deltaTime);
+            }
+
             for (int i = entities.Count - 1; i >= 0; i--)
             {
                 entities[i].Update(deltaTime);

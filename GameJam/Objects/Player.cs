@@ -8,21 +8,25 @@ namespace GameJam.Objects
 {
     public class Player : Entity
     {
-        private new static readonly Vector2 size = new Vector2(40, 40);
+        private new static readonly Vector2 size = new Vector2(24, 24);
+        private readonly Vector2 startPosition;
 
-        private readonly float maxSpeed = 200f; // max speed the player moves at
+        private readonly float maxSpeed = 300f; // max speed the player moves at
         private readonly float accel = 1600; // acceleration
-        private readonly float friction = 600f; // friction applied to player
+        private readonly float friction = 1000f; // friction applied to player
         private readonly float airScaler = .65f;
         private readonly float airSpeedDebuff = 160f; //when the player goes faster than this speed, it will apply the airScalar debuff to air friction instead of the normal scalar
         private readonly float airScalarDebuff = .4f;
         private readonly float jumpForce = 400f; // the force applied when jumping
+
+        bool isDead = false;
 
         private Texture2D texture;
         private float moveX = 0;
 
         public Player(Vector2 _position) : base(_position, size, true)
         {
+            startPosition = _position;
             collisionCallbacks.Add(3, SpikeHit);
         }
 
@@ -75,6 +79,11 @@ namespace GameJam.Objects
             else
                 velocity.X = Approach(velocity.X, maxSpeed * moveX, accel * deltaTime * mul);
 
+            if (position.Y > gameState.mapRect.Bottom)
+            {
+                Died();
+            }
+
             base.Update(deltaTime);
         }
 
@@ -100,12 +109,33 @@ namespace GameJam.Objects
 
         public void SpikeHit()
         {
-            
+            Died();
+        }
+
+        private void Died()
+        {
+            if (isDead) return;
+            isDead = true;
+
+            velocity = Vector2.Zero;
+            frozen = true;
+
+            new Delay(1, Respawn);
+        }
+
+        private void Respawn()
+        {
+            isDead = false;
+            frozen = false;
+            position = startPosition;
+            gameState.camera.position = Vector2.Zero;
+            gameState.camera.target = Vector2.Zero;
         }
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(texture, position, Color.White);
+            if (!isDead)
+                spriteBatch.Draw(texture, position, Color.White);
         }
 
         public override void Dispose()

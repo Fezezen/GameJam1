@@ -20,6 +20,7 @@ namespace GameJam.Objects
         protected Dictionary<int, Action> collisionCallbacks;
 
         public bool gravityOn;
+        protected bool frozen;
 
         public Entity(Vector2 _position, Vector2 _size, bool grav)
         {
@@ -37,10 +38,11 @@ namespace GameJam.Objects
 
         public virtual void Update(float deltaTime)
         {
-            if (gravityOn)
+            if (gravityOn && !frozen)
                 velocity += Vector2.UnitY * Program.Engine.gravity * deltaTime;
 
-            position = HandleCollision(deltaTime);
+            if (!frozen)
+                position = HandleCollision(deltaTime);
 
             //position += velocity*deltaTime;
             bounds.Location = position.ToPoint();
@@ -111,7 +113,7 @@ namespace GameJam.Objects
                             default:                                
                                 if (collisionCallbacks.ContainsKey(gameState.tiles[tPos.X, tPos.Y]))
                                     collisionCallbacks[gameState.tiles[tPos.X, tPos.Y]]();
-                                velocity += normal * new Vector2(Math.Abs(velocity.X), Math.Abs(velocity.Y)) * (1.0f - time);
+                                
                                 break;
                         }
 

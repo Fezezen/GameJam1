@@ -11,9 +11,9 @@ namespace GameJam.Objects
         private new static readonly Vector2 size = new Vector2(24, 24);
         private readonly Vector2 startPosition;
 
-        private readonly float maxSpeed = 300f; // max speed the player moves at
+        private readonly float maxSpeed = 200f; // max speed the player moves at
         private readonly float accel = 1600; // acceleration
-        private readonly float friction = 1000f; // friction applied to player
+        private readonly float friction = 1300f; // friction applied to player
         private readonly float airScaler = .65f;
         private readonly float airSpeedDebuff = 160f; //when the player goes faster than this speed, it will apply the airScalar debuff to air friction instead of the normal scalar
         private readonly float airScalarDebuff = .4f;

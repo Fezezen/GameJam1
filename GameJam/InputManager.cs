@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Input;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 
 namespace GameJam
 {
@@ -6,6 +7,8 @@ namespace GameJam
     {
         private static KeyboardState keyboardState;
         private static KeyboardState previousKeyboardState;
+        private static MouseState mouseState;
+        private static MouseState previousMouseState;
 
         public static void Initalize()
         {
@@ -16,11 +19,13 @@ namespace GameJam
         public static void Update()
         {
             keyboardState = Keyboard.GetState();
+            mouseState = Mouse.GetState();
         }
 
         public static void LateUpdate()
         {
             previousKeyboardState = keyboardState;
+            previousMouseState = mouseState;
         }
 
         public static bool IsKeyDown(Keys key)
@@ -41,6 +46,25 @@ namespace GameJam
         {
             /// <summary>Determines if a key is being pushed but not held down</summary>
             return keyboardState.IsKeyDown(key) && previousKeyboardState.IsKeyUp(key);
+        }
+
+        public static Point GetMousePos()
+        {
+            return mouseState.Position;
+        }
+
+        public static bool MouseClick(int i)
+        {
+            switch (i)
+            {
+                case 1:
+                    return mouseState.LeftButton == ButtonState.Pressed;
+                case 2:
+                    return mouseState.RightButton == ButtonState.Pressed;
+                default:
+                    break;
+            }
+            return false;
         }
     }
 }

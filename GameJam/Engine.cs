@@ -27,7 +27,7 @@ namespace GameJam
             };
             Content.RootDirectory = "Content";
 
-            gameState = new MainState();
+            gameState = new MenuState();
         }
 
         protected override void Initialize()
@@ -93,7 +93,9 @@ namespace GameJam
                     gameState.UnloadContent();
                 }
 
-                gameState = (GameState)Activator.CreateInstance(type);
+                gameState = (GameState)Activator.CreateInstance(type);                
+                gameState.Initalize();
+                gameState.LoadContent(GraphicsDevice);
             }
         }
     }

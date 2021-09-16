@@ -46,6 +46,7 @@
     <Compile Include="Engine.cs" />
     <Compile Include="GameStates\GameState.cs" />
     <Compile Include="GameStates\MainState.cs" />
+    <Compile Include="GameStates\MenuState.cs" />
     <Compile Include="InputManager.cs" />
     <Compile Include="Map.cs" />
     <Compile Include="Objects\Camera.cs" />

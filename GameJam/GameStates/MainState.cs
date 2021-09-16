@@ -12,8 +12,8 @@ namespace GameJam.GameStates
         public int tileSize = 32;
         public Point gridSize;
 
-        public Texture2D background;
-        public Texture2D backgroundFar;
+        Texture2D background;
+        Texture2D backgroundFar;
 
         Map map;
         public Camera camera;
@@ -58,6 +58,10 @@ namespace GameJam.GameStates
                 entity.Dispose();
 
             entities.Clear();
+
+            background.Dispose();
+            backgroundFar.Dispose();
+            Delay.delays.Clear();
         }
 
         public override void Update(float deltaTime)

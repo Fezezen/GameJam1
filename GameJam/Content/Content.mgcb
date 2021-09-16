@@ -46,6 +46,18 @@
 #begin Levels/TestLevel.json
 /copy:Levels/TestLevel.json
 
+#begin Menu/Play.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Menu/Play.png
+
 #begin Tilesets/Debug.png
 /importer:TextureImporter
 /processor:TextureProcessor

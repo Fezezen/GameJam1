@@ -13,6 +13,9 @@ namespace GameJam
         private List<Texture2D> layerImages;
         public int[,] grid;
 
+        public int playerX;
+        public int playerY;
+
         public Map(int w, int h, int tileSize)
         {
             width = w;

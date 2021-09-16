@@ -23,6 +23,12 @@ namespace GameJam
 
                 Map map = new Map(d_Map.width, d_Map.height, d_Map.tileWidth);
 
+                if (d_Map.properties.Exists(p => p.name == "PlayerX"))
+                    map.playerX = int.Parse(d_Map.properties.Find(p => p.name == "PlayerX").value);
+
+                if (d_Map.properties.Exists(p => p.name == "PlayerY"))
+                    map.playerY = int.Parse(d_Map.properties.Find(p => p.name == "PlayerY").value);
+
                 foreach (D_Layer layer in d_Map.layers)
                 {
                     switch (layer.type)
@@ -41,7 +47,9 @@ namespace GameJam
                                         if (i != 0)
                                         {
                                             //Texture2D tile = tileTextures[i - 1]; // subtract given index by 1 because 0 is empty space
-                                            PlaceTileOnColorData(tileTextures[i-1], d_Map.tileWidth, d_Map.tileHeight, ref colorData, x, y, texture.Width, texture.Height);
+                                            if (tileTextures.ContainsKey(i-1))
+                                                PlaceTileOnColorData(tileTextures[i-1], d_Map.tileWidth, d_Map.tileHeight, ref colorData, x, y, texture.Width, texture.Height);
+
                                         }
                                     }
                                 }
@@ -163,6 +171,7 @@ namespace GameJam
 
         public List<D_Tileset> tilesets;
         public List<D_Layer> layers;
+        public List<D_CustomProperty> properties;
     }
 
     struct D_Tileset
@@ -181,5 +190,11 @@ namespace GameJam
         public int height;
         public string name;
         public string type;
+    }
+
+    struct D_CustomProperty
+    {
+        public string name;
+        public string value; 
     }
 }

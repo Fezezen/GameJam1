@@ -17,7 +17,7 @@ namespace GameJam.Objects
         protected Rectangle bounds;
         protected bool isGrounded;
         protected GameStates.MainState gameState;
-        protected Dictionary<int, Action> collisionCallbacks;
+        protected Dictionary<int, Action<Vector2,Vector2,float>> collisionCallbacks;
 
         public bool gravityOn;
         protected bool frozen;
@@ -31,7 +31,7 @@ namespace GameJam.Objects
 
             gameState = (GameStates.MainState)Program.Engine.gameState;
 
-            collisionCallbacks = new Dictionary<int, Action>();
+            collisionCallbacks = new Dictionary<int, Action<Vector2, Vector2, float>>();
         }
 
         public abstract void LoadContent(GraphicsDevice graphicsDevice);
@@ -72,6 +72,8 @@ namespace GameJam.Objects
                     if (gameState.tiles[x, y] > 0)
                     {
                         Rectangle rect = new Rectangle(new Point(x * gameState.tileSize, y * gameState.tileSize), new Point(gameState.tileSize, gameState.tileSize));
+                        if (gameState.tiles[x, y] == 3)
+                            rect = new Rectangle(new Point(x * gameState.tileSize, y * gameState.tileSize + gameState.tileSize/2), new Point(gameState.tileSize, gameState.tileSize/2));
                         tileRects.Add(rect);
                     }
                 }
@@ -112,7 +114,7 @@ namespace GameJam.Objects
                                 break;
                             default:                                
                                 if (collisionCallbacks.ContainsKey(gameState.tiles[tPos.X, tPos.Y]))
-                                    collisionCallbacks[gameState.tiles[tPos.X, tPos.Y]]();
+                                    collisionCallbacks[gameState.tiles[tPos.X, tPos.Y]](normal, point,time);
                                 
                                 break;
                         }

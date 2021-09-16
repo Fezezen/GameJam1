@@ -12,7 +12,8 @@ namespace GameJam.GameStates
         public int tileSize = 32;
         public Point gridSize;
 
-        public Texture2D texture;
+        public Texture2D background;
+        public Texture2D backgroundFar;
 
         Map map;
         public Camera camera;
@@ -20,11 +21,11 @@ namespace GameJam.GameStates
 
         public override void Initalize()
         {
-            map = TiledLoader.LoadMap("Level1.json");
+            map = TiledLoader.LoadMap("Level3.json");
 
             entities = new List<Entity>
             {
-                new Player(new Vector2(64,64))
+                new Player(new Vector2(map.playerX*map.tilesize,map.playerY*map.tilesize))
             };
 
             gridSize = new Point(map.width,map.height);
@@ -32,6 +33,9 @@ namespace GameJam.GameStates
             mapRect = new Rectangle(new Point(), new Point(gridSize.X * map.tilesize, gridSize.Y * map.tilesize));
 
             camera = new Camera();
+
+            background = Program.Engine.Content.Load<Texture2D>("Background");
+            backgroundFar = Program.Engine.Content.Load<Texture2D>("BackgroundFar");
 
             if (map != null)
                 tiles = map.grid;
@@ -73,6 +77,14 @@ namespace GameJam.GameStates
 
         public override void Draw(SpriteBatch spriteBatch)
         {
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp);
+            spriteBatch.Draw(backgroundFar, Vector2.Zero, Color.White);
+            spriteBatch.End();
+
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap, null, null, null, camera.Transform);
+            spriteBatch.Draw(background, camera.position, new Rectangle((camera.position*.1f).ToPoint(), camera.size.ToPoint()), Color.White);
+            spriteBatch.End();
+
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, camera.Transform);
 
             for (int i = entities.Count - 1; i >= 0; i--)
@@ -80,25 +92,6 @@ namespace GameJam.GameStates
                 entities[i].Draw(spriteBatch);
             }
 
-            /*for (int x = 0; x < gridSize.X; x++)
-            {
-                for (int y = 0; y < gridSize.Y; y++)
-                {
-                    switch(tiles[x,y])
-                    {
-                        case 1:
-                            spriteBatch.Draw(texture, new Vector2(x * tileSize, y * tileSize), Color.White);
-                            break;
-                        case 2:
-                            spriteBatch.Draw(texture, new Vector2(x * tileSize, y * tileSize), Color.Blue);
-                            break;
-                        default:
-                            break;
-                    }
-                }
-            }*/
-
-            //spriteBatch.Draw(texture, rect, Color.White);
             if (map != null)
                 map.Draw(spriteBatch);
 

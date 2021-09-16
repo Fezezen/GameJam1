@@ -82,9 +82,14 @@ namespace GameJam.Objects
             if (position.Y > gameState.mapRect.Bottom)
             {
                 Died();
-            }
+            } 
 
             base.Update(deltaTime);
+
+            if (position.X < 0)
+                position.X = 0;
+            else if (position.X + size.X > gameState.mapRect.Right)
+                position.X = gameState.mapRect.Right - size.X;
         }
 
         private void HandleInput(float deltaTime)
@@ -107,9 +112,12 @@ namespace GameJam.Objects
             velocity.Y -= jumpForce;
         }
 
-        public void SpikeHit()
+        public void SpikeHit(Vector2 normal, Vector2 pos, float time)
         {
-            Died();
+            if (normal.Y == - 1)
+                Died();
+            else
+                velocity += normal * new Vector2(Math.Abs(velocity.X), Math.Abs(velocity.Y)) * (1.0f - time);
         }
 
         private void Died()

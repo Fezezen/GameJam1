@@ -45,7 +45,7 @@ namespace GameJam
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             if (gameState != null)
-                gameState.LoadContent(GraphicsDevice);
+                gameState.LoadContent(GraphicsDevice); // load current game state
         }
 
         protected override void UnloadContent()
@@ -79,7 +79,7 @@ namespace GameJam
             base.Draw(gameTime);
         }
 
-        public void ChangeGameState(string stateName)
+        public void ChangeGameState(string stateName) // swap between game states
         {
             var type = (from assembly in AppDomain.CurrentDomain.GetAssemblies() // determine if the state class exists
                         from t in assembly.GetTypes()

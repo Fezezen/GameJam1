@@ -40,7 +40,7 @@ namespace GameJam.GameStates
             if (map != null)
                 tiles = map.grid;
 
-            Delay.delays.Clear();
+            Delay.delays.Clear(); // Make sure no delays fire in the new state.
         }
 
         public override void LoadContent(GraphicsDevice graphicsDevice)

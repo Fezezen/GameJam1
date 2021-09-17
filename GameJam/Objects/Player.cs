@@ -18,6 +18,11 @@ namespace GameJam.Objects
         private readonly float airSpeedDebuff = 160f; //when the player goes faster than this speed, it will apply the airScalar debuff to air friction instead of the normal scalar
         private readonly float airScalarDebuff = .4f;
         private readonly float jumpForce = 400f; // the force applied when jumping
+        
+        private readonly float coyoteTimeAmount = .1f;
+        private float coyoteTime = 0f; // if the player presses the jump button only like 2 or 3 frames after they start falling they may feel like the game is broken. So we let them jump a little after
+        private readonly float jumpBufferAmount = .1f;
+        private float jumpBuffer = 0f; // if the player presses the jump button only a couple frames before they land, we still let them jump.
 
         bool isDead = false;
 
@@ -72,6 +77,8 @@ namespace GameJam.Objects
         {
             HandleInput(deltaTime);
 
+            bool wasGrounded = isGrounded;
+
             float mul = isGrounded ? 1 : ((Math.Abs(velocity.X) < airSpeedDebuff) ? airScaler : airScalarDebuff);
 
             if (Math.Abs(velocity.X) > maxSpeed && Math.Sign(velocity.X) == moveX)
@@ -90,6 +97,21 @@ namespace GameJam.Objects
                 position.X = 0;
             else if (position.X + size.X > gameState.mapRect.Right)
                 position.X = gameState.mapRect.Right - size.X;
+
+            if (isGrounded)
+            {
+                coyoteTime = coyoteTimeAmount;
+
+                if (jumpBuffer > 0)
+                    Jump();
+
+                jumpBuffer = 0f;
+            }
+            else
+            {
+                coyoteTime -= deltaTime;
+                jumpBuffer -= deltaTime;
+            }
         }
 
         private void HandleInput(float deltaTime)
@@ -101,15 +123,18 @@ namespace GameJam.Objects
             else
                 moveX = 0;
 
-            if (InputManager.KeyPushed(Keys.Z) && isGrounded)
+            if (InputManager.KeyPushed(Keys.Z) && coyoteTime > 0f)
                 Jump();
+            else if (!isGrounded && InputManager.KeyPushed(Keys.Z))
+                jumpBuffer = jumpBufferAmount;
         }
 
         public void Jump()
         {
             isGrounded = false;
             position.Y--; // avoids weird bug, ik it's not a good fix
-            velocity.Y -= jumpForce;
+            velocity.Y = -jumpForce;
+            coyoteTime = 0;
         }
 
         public void SpikeHit(Vector2 normal, Vector2 pos, float time)

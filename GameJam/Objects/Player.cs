@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using GameJam.Audio;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -29,6 +30,9 @@ namespace GameJam.Objects
         private Texture2D texture;
         private float moveX = 0;
 
+        private SFX jumpSound;
+        private SFX deathSound;
+
         public Player(Vector2 _position) : base(_position, size, true)
         {
             startPosition = _position;
@@ -44,6 +48,15 @@ namespace GameJam.Objects
                 color[i] = Color.Red;
 
             texture.SetData(color);
+
+            jumpSound = new SFX("Sounds/Player/jump")
+            {
+                volume = 0.1f
+            };
+            deathSound = new SFX("Sounds/Player/death")
+            {
+                volume = .2f
+            };
         }
 
         private float Approach(float current, float goal, float a) // simulated acceleration
@@ -135,6 +148,7 @@ namespace GameJam.Objects
             position.Y--; // avoids weird bug, ik it's not a good fix
             velocity.Y = -jumpForce;
             coyoteTime = 0;
+            jumpSound.Play();
         }
 
         public void SpikeHit(Vector2 normal, Vector2 pos, float time)
@@ -153,7 +167,11 @@ namespace GameJam.Objects
             velocity = Vector2.Zero;
             frozen = true;
 
-            new Delay(1, Respawn);
+            deathSound.Play();
+
+            gameState.musicInstance.Pause();
+
+            new Delay(3, Respawn);
         }
 
         private void Respawn()
@@ -163,6 +181,8 @@ namespace GameJam.Objects
             position = startPosition;
             gameState.camera.position = Vector2.Zero;
             gameState.camera.target = Vector2.Zero;
+
+            gameState.musicInstance.Resume();
         }
 
         public override void Draw(SpriteBatch spriteBatch)

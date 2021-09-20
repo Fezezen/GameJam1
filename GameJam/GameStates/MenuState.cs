@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace GameJam.GameStates
@@ -13,6 +14,9 @@ namespace GameJam.GameStates
 
         Point bkPos;
 
+        private SoundEffect music;
+        public SoundEffectInstance musicInstance;
+
         public override void Initalize()
         {
             Program.Engine.IsMouseVisible = true;
@@ -20,6 +24,12 @@ namespace GameJam.GameStates
             {
                 new Button("Menu/Play", Program.Engine.GraphicsDevice.Viewport.Width / 2, 150, true, Play)
             };
+
+            music = Program.Engine.Content.Load<SoundEffect>("Sounds/Music/intro_music");
+            musicInstance = music.CreateInstance();
+            musicInstance.Volume = .2f;
+            musicInstance.IsLooped = true;
+            musicInstance.Play();
 
             bkPos = new Point();
         }
@@ -34,6 +44,8 @@ namespace GameJam.GameStates
         {
             foreach (Button button in buttons)
                 button.texture.Dispose();
+
+            musicInstance.Dispose();
         }
 
         public override void Update(float deltaTime)

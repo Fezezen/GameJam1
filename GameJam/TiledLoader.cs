@@ -22,6 +22,7 @@ namespace GameJam
                 Dictionary<int, Color[]> tileTextures = LoadTiles(d_Map);
 
                 Map map = new Map(d_Map.width, d_Map.height, d_Map.tileWidth);
+                map.music = d_Map.music;
 
                 if (d_Map.properties.Exists(p => p.name == "PlayerX"))
                     map.playerX = int.Parse(d_Map.properties.Find(p => p.name == "PlayerX").value);
@@ -172,6 +173,8 @@ namespace GameJam
         public List<D_Tileset> tilesets;
         public List<D_Layer> layers;
         public List<D_CustomProperty> properties;
+
+        public string music;
     }
 
     struct D_Tileset

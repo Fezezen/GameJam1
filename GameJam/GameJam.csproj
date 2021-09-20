@@ -42,6 +42,7 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Audio\SFX.cs" />
     <Compile Include="Delay.cs" />
     <Compile Include="Engine.cs" />
     <Compile Include="GameStates\GameState.cs" />

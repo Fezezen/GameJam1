@@ -58,6 +58,42 @@
 /processorParam:TextureFormat=Color
 /build:Menu/Play.png
 
+#begin Sounds/collecting_instruments_sound.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/collecting_instruments_sound.wav
+
+#begin Sounds/level_completed_sound.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/level_completed_sound.wav
+
+#begin Sounds/Music/background_music.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/Music/background_music.wav
+
+#begin Sounds/Music/intro_music.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/Music/intro_music.wav
+
+#begin Sounds/Player/death.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/Player/death.wav
+
+#begin Sounds/Player/jump.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/Player/jump.wav
+
 #begin Tilesets/Debug.png
 /importer:TextureImporter
 /processor:TextureProcessor

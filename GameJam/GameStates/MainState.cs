@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Audio;
 
 namespace GameJam.GameStates
 {
@@ -19,9 +20,12 @@ namespace GameJam.GameStates
         public Camera camera;
         public Rectangle mapRect;
 
+        private SoundEffect music;
+        public SoundEffectInstance musicInstance;
+
         public override void Initalize()
         {
-            map = TiledLoader.LoadMap("Level3.json");
+            map = TiledLoader.LoadMap("Level1.json");
 
             entities = new List<Entity>
             {
@@ -39,6 +43,12 @@ namespace GameJam.GameStates
 
             if (map != null)
                 tiles = map.grid;
+
+            music = Program.Engine.Content.Load<SoundEffect>("Sounds/Music/" + map.music);
+            musicInstance = music.CreateInstance();
+            musicInstance.Volume = .2f;
+            musicInstance.IsLooped = true;
+            musicInstance.Play();
 
             Delay.delays.Clear(); // Make sure no delays fire in the new state.
         }
@@ -61,6 +71,7 @@ namespace GameJam.GameStates
 
             background.Dispose();
             backgroundFar.Dispose();
+            musicInstance.Dispose();
             Delay.delays.Clear();
         }
 

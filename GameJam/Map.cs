@@ -16,6 +16,8 @@ namespace GameJam
         public int playerX;
         public int playerY;
 
+        public string music;
+
         public Map(int w, int h, int tileSize)
         {
             width = w;

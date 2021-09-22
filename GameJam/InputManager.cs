@@ -53,7 +53,7 @@ namespace GameJam
             return mouseState.Position;
         }
 
-        public static bool MouseClick(int i)
+        public static bool MouseDown(int i)
         {
             switch (i)
             {
@@ -65,6 +65,25 @@ namespace GameJam
                     break;
             }
             return false;
+        }
+
+        public static bool MouseDownPrev(int i)
+        {
+            switch (i)
+            {
+                case 1:
+                    return previousMouseState.LeftButton == ButtonState.Pressed;
+                case 2:
+                    return previousMouseState.RightButton == ButtonState.Pressed;
+                default:
+                    break;
+            }
+            return false;
+        }
+
+        public static bool MouseClick(int i)
+        {
+            return MouseDown(i) && !MouseDownPrev(i);
         }
     }
 }

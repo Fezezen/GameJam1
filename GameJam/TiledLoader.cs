@@ -21,14 +21,23 @@ namespace GameJam
                 //Texture2D[] tileTextures = LoadTiles(d_Map);
                 Dictionary<int, Color[]> tileTextures = LoadTiles(d_Map);
 
-                Map map = new Map(d_Map.width, d_Map.height, d_Map.tileWidth);
-                map.music = d_Map.music;
+                Map map = new Map(d_Map.width, d_Map.height, d_Map.tileWidth)
+                {
+                    music = d_Map.properties.Find(e => e.name == "Music").value,
+                    instrument = d_Map.properties.Find(e => e.name == "Instrument").value
+                };
 
                 if (d_Map.properties.Exists(p => p.name == "PlayerX"))
                     map.playerX = int.Parse(d_Map.properties.Find(p => p.name == "PlayerX").value);
 
                 if (d_Map.properties.Exists(p => p.name == "PlayerY"))
                     map.playerY = int.Parse(d_Map.properties.Find(p => p.name == "PlayerY").value);
+
+                map.instruPos = new Vector2(float.Parse(d_Map.properties.Find(p => p.name == "InstrumentX").value), float.Parse(d_Map.properties.Find(p => p.name == "InstrumentY").value));
+                map.isFinale = d_Map.properties.Exists(e => e.name == "Finale");
+
+                if (d_Map.properties.Exists(p => p.name == "NextLevel"))
+                    map.nextLevel = d_Map.properties.Find(p => p.name == "NextLevel").value;
 
                 foreach (D_Layer layer in d_Map.layers)
                 {
@@ -173,8 +182,6 @@ namespace GameJam
         public List<D_Tileset> tilesets;
         public List<D_Layer> layers;
         public List<D_CustomProperty> properties;
-
-        public string music;
     }
 
     struct D_Tileset

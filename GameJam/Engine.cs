@@ -35,7 +35,7 @@ namespace GameJam
             InputManager.Initalize();
 
             if (gameState != null)
-                gameState.Initalize();
+                gameState.Initalize(new object[0]);
 
             base.Initialize();
         }
@@ -52,6 +52,8 @@ namespace GameJam
         {
             if (gameState != null)
                 gameState.UnloadContent();
+
+            Content.Dispose();
         }
 
         protected override void Update(GameTime gameTime)
@@ -79,7 +81,7 @@ namespace GameJam
             base.Draw(gameTime);
         }
 
-        public void ChangeGameState(string stateName) // swap between game states
+        public void ChangeGameState(string stateName, params object[] list) // swap between game states
         {
             var type = (from assembly in AppDomain.CurrentDomain.GetAssemblies() // determine if the state class exists
                         from t in assembly.GetTypes()
@@ -93,8 +95,8 @@ namespace GameJam
                     gameState.UnloadContent();
                 }
 
-                gameState = (GameState)Activator.CreateInstance(type);                
-                gameState.Initalize();
+                gameState = (GameState)Activator.CreateInstance(type);        
+                gameState.Initalize(list);
                 gameState.LoadContent(GraphicsDevice);
             }
         }

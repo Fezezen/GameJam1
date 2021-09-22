@@ -1,5 +1,4 @@
 { "compressionlevel":-1,
- "music" : "background_music",
  "height":18,
  "infinite":false,
  "layers":[
@@ -31,6 +30,31 @@
  "nextobjectid":1,
  "orientation":"orthogonal",
  "properties":[
+        {
+         "name":"Instrument",
+         "type":"string",
+         "value":"WindPipe"
+        }, 
+        {
+         "name":"InstrumentX",
+         "type":"int",
+         "value":3040
+        }, 
+        {
+         "name":"InstrumentY",
+         "type":"int",
+         "value":96
+        }, 
+        {
+         "name":"Music",
+         "type":"string",
+         "value":"background_music"
+        }, 
+        {
+         "name":"NextLevel",
+         "type":"string",
+         "value":"Level3.json"
+        }, 
         {
          "name":"PlayerX",
          "type":"int",

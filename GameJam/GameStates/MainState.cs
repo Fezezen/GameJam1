@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Audio;
 namespace GameJam.GameStates
 {
     public class MainState : GameState // This is the game state that handles the main part of the game where the player has control of their character.
-    {
+    {       
         public List<Entity> entities;
         public int[,] tiles;
         public int tileSize = 32;
@@ -23,13 +23,20 @@ namespace GameJam.GameStates
         private SoundEffect music;
         public SoundEffectInstance musicInstance;
 
-        public override void Initalize()
+        public Instrument instrument;
+        public bool isFinale;
+        public string nextLevel;
+
+        public override void Initalize(object[] list)
         {
-            map = TiledLoader.LoadMap("Level1.json");
+            map = TiledLoader.LoadMap((string)list[0]);
+
+            instrument = new Instrument(map.instruPos, new Vector2(30,30), "Instruments/" + map.instrument);
 
             entities = new List<Entity>
             {
-                new Player(new Vector2(map.playerX*map.tilesize,map.playerY*map.tilesize))
+                new Player(new Vector2(map.playerX*map.tilesize,map.playerY*map.tilesize)),
+                instrument
             };
 
             gridSize = new Point(map.width,map.height);
@@ -46,9 +53,12 @@ namespace GameJam.GameStates
 
             music = Program.Engine.Content.Load<SoundEffect>("Sounds/Music/" + map.music);
             musicInstance = music.CreateInstance();
-            musicInstance.Volume = .2f;
+            musicInstance.Volume = .05f;
             musicInstance.IsLooped = true;
             musicInstance.Play();
+
+            isFinale = map.isFinale;
+            nextLevel = map.nextLevel;
 
             Delay.delays.Clear(); // Make sure no delays fire in the new state.
         }
@@ -69,8 +79,8 @@ namespace GameJam.GameStates
 
             entities.Clear();
 
-            background.Dispose();
-            backgroundFar.Dispose();
+            //background.Dispose();
+            //backgroundFar.Dispose();
             musicInstance.Dispose();
             Delay.delays.Clear();
         }

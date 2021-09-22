@@ -26,12 +26,15 @@ namespace GameJam.Objects
         private float jumpBuffer = 0f; // if the player presses the jump button only a couple frames before they land, we still let them jump.
 
         bool isDead = false;
+        bool isCollecting = false;
 
         private Texture2D texture;
         private float moveX = 0;
 
         private SFX jumpSound;
         private SFX deathSound;
+        private SFX collectIntrument;
+        private SFX levelCompleteSFX;
 
         public Player(Vector2 _position) : base(_position, size, true)
         {
@@ -55,7 +58,15 @@ namespace GameJam.Objects
             };
             deathSound = new SFX("Sounds/Player/death")
             {
-                volume = .2f
+                volume = 0.2f
+            };
+            collectIntrument = new SFX("Sounds/collecting_instruments_sound")
+            {
+                volume = 0.2f
+            };
+            levelCompleteSFX = new SFX("Sounds/level_completed_sound")
+            {
+                volume = 0.2f
             };
         }
 
@@ -88,6 +99,12 @@ namespace GameJam.Objects
 
         public override void Update(float deltaTime)
         {
+            if (gameState.instrument.rectangle.Contains((position + size / 2).ToPoint()))
+                GrabInstrument();
+
+            if (isCollecting)
+                return;
+
             HandleInput(deltaTime);
 
             bool wasGrounded = isGrounded;
@@ -140,6 +157,38 @@ namespace GameJam.Objects
                 Jump();
             else if (!isGrounded && InputManager.KeyPushed(Keys.Z))
                 jumpBuffer = jumpBufferAmount;
+        }
+
+        private void GrabInstrument()
+        {
+            if (isCollecting) return;
+
+            gameState.entities.Remove(gameState.instrument);
+            gameState.instrument.Dispose();
+
+            isCollecting = true;
+
+            collectIntrument.Play();
+
+            new Delay(1, FinishLevel);
+        }
+
+        private void FinishLevel()
+        {
+            levelCompleteSFX.Play();
+            gameState.musicInstance.Stop();
+
+            new Delay(2.5f, SwapLevels);
+        }
+
+        private void SwapLevels()
+        {
+            if (gameState.isFinale)
+            {
+                Program.Engine.ChangeGameState("MenuState");
+            }
+            else
+                Program.Engine.ChangeGameState("MainState", gameState.nextLevel);
         }
 
         public void Jump()

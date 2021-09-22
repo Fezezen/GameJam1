@@ -17,6 +17,11 @@ namespace GameJam
         public int playerY;
 
         public string music;
+        public string instrument;
+        public Vector2 instruPos;
+
+        public bool isFinale;
+        public string nextLevel;
 
         public Map(int w, int h, int tileSize)
         {

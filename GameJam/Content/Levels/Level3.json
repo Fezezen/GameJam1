@@ -31,6 +31,31 @@
  "orientation":"orthogonal",
  "properties":[
         {
+         "name":"Finale",
+         "type":"bool",
+         "value":true
+        }, 
+        {
+         "name":"Instrument",
+         "type":"string",
+         "value":"Ocarina"
+        }, 
+        {
+         "name":"InstrumentX",
+         "type":"int",
+         "value":2880
+        }, 
+        {
+         "name":"InstrumentY",
+         "type":"int",
+         "value":704
+        }, 
+        {
+         "name":"Music",
+         "type":"string",
+         "value":"background_music_1"
+        }, 
+        {
          "name":"PlayerX",
          "type":"int",
          "value":1

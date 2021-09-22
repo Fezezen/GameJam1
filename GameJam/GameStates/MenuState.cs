@@ -12,18 +12,29 @@ namespace GameJam.GameStates
         Texture2D background;
         Texture2D backgroundFar;
 
+        Texture2D infoPrompt;
+        bool isInfoPromptVisible = false;
+        Vector2 infoPosition;
+
+        Texture2D controlsPrompt;
+        bool isControlsPromptVisible = false;
+
         Point bkPos;
 
         private SoundEffect music;
         public SoundEffectInstance musicInstance;
 
-        public override void Initalize()
+        public override void Initalize(object[] list)
         {
             Program.Engine.IsMouseVisible = true;
             buttons = new List<Button>
             {
-                new Button("Menu/Play", Program.Engine.GraphicsDevice.Viewport.Width / 2, 150, true, Play)
+                new Button("Menu/Play", Program.Engine.GraphicsDevice.Viewport.Width / 2, 250, true, Play),
+                new Button("Menu/Info", Program.Engine.GraphicsDevice.Viewport.Width / 2, 350, true, Info),
+                new Button("Menu/Controls", Program.Engine.GraphicsDevice.Viewport.Width / 2, 450, true, Controls)
             };
+
+            infoPosition = new Vector2(Program.Engine.GraphicsDevice.Viewport.Width / 2 - 400f,50);
 
             music = Program.Engine.Content.Load<SoundEffect>("Sounds/Music/intro_music");
             musicInstance = music.CreateInstance();
@@ -38,27 +49,35 @@ namespace GameJam.GameStates
         {
             background = Program.Engine.Content.Load<Texture2D>("Background");
             backgroundFar = Program.Engine.Content.Load<Texture2D>("BackgroundFar");
+
+            infoPrompt = Program.Engine.Content.Load<Texture2D>("Menu/InfoPrompt");
+            controlsPrompt = Program.Engine.Content.Load<Texture2D>("Menu/ControlsPrompt");
         }
 
         public override void UnloadContent()
         {
-            foreach (Button button in buttons)
-                button.texture.Dispose();
+            /*foreach (Button button in buttons)
+                button.texture.Dispose();*/
 
             musicInstance.Dispose();
         }
 
         public override void Update(float deltaTime)
         {
-            foreach (Button button in buttons)
-            {
-                button.hover = button.rect.Contains(InputManager.GetMousePos());
-
-                if (button.hover && InputManager.MouseClick(1))
+            if (!isInfoPromptVisible && !isControlsPromptVisible)
+                foreach (Button button in buttons)
                 {
-                    button.callback();
+                    button.hover = button.rect.Contains(InputManager.GetMousePos());
+
+                    if (button.hover && InputManager.MouseClick(1))
+                    {
+                        button.callback();
+                    }
                 }
-            }
+            else if (isInfoPromptVisible && InputManager.MouseClick(1))
+                isInfoPromptVisible = false;
+            else if (isControlsPromptVisible && InputManager.MouseClick(1))
+                isControlsPromptVisible = false;
 
             bkPos.X += 1;
         }
@@ -81,12 +100,27 @@ namespace GameJam.GameStates
                 else
                     spriteBatch.Draw(button.texture, button.rect, Color.White);
 
+            if (isInfoPromptVisible)
+                spriteBatch.Draw(infoPrompt, infoPosition, Color.White);
+            else if (isControlsPromptVisible)
+                spriteBatch.Draw(controlsPrompt, infoPosition, Color.White);
+
             spriteBatch.End();
         }
 
-        public void Play()
+        private void Play()
         {
-            Program.Engine.ChangeGameState("MainState");
+            Program.Engine.ChangeGameState("MainState", "Level1.json");
+        }
+
+        private void Info()
+        {
+            isInfoPromptVisible = true;
+        }
+
+        private void Controls()
+        {
+            isControlsPromptVisible = true;
         }
     }
 

@@ -8,7 +8,7 @@ namespace GameJam.GameStates
         // Game states are states that the game is in such as the Menu, or Level select screen, or Overworld and alike.
         protected bool unloading = false;
 
-        public abstract void Initalize();
+        public abstract void Initalize(object[] list);
         public abstract void LoadContent(GraphicsDevice graphicsDevice);
         public abstract void UnloadContent();
         public abstract void Update(float deltaTime);

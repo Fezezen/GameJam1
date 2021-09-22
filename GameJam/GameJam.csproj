@@ -52,6 +52,7 @@
     <Compile Include="Map.cs" />
     <Compile Include="Objects\Camera.cs" />
     <Compile Include="Objects\Entity.cs" />
+    <Compile Include="Objects\Instrument.cs" />
     <Compile Include="Objects\Player.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

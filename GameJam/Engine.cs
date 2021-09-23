@@ -23,9 +23,10 @@ namespace GameJam
             graphics = new GraphicsDeviceManager(this)
             {
                 PreferredBackBufferWidth = 1024,
-                PreferredBackBufferHeight = 576,
+                PreferredBackBufferHeight = 576,                
             };
             Content.RootDirectory = "Content";
+            Window.Title = "Isolating Hope";
 
             gameState = new MenuState();
         }

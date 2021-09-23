@@ -9,7 +9,7 @@ namespace GameJam.Objects
 {
     public class Player : Entity
     {
-        private new static readonly Vector2 size = new Vector2(24, 24);
+        private new static readonly Vector2 size = new Vector2(19, 50);
         private readonly Vector2 startPosition;
 
         private readonly float maxSpeed = 200f; // max speed the player moves at
@@ -30,6 +30,7 @@ namespace GameJam.Objects
 
         private Texture2D texture;
         private float moveX = 0;
+        private bool flip = false;
 
         private SFX jumpSound;
         private SFX deathSound;
@@ -38,19 +39,14 @@ namespace GameJam.Objects
 
         public Player(Vector2 _position) : base(_position, size, true)
         {
-            startPosition = _position;
+            position -= Vector2.UnitY * size.Y;
+            startPosition = position;
             collisionCallbacks.Add(3, SpikeHit);
         }
 
         public override void LoadContent(GraphicsDevice graphicsDevice)
         {
-            texture = new Texture2D(graphicsDevice, (int)size.X, (int)size.Y);
-            Color[] color = new Color[texture.Width * texture.Height];
-
-            for (int i = 0; i < texture.Width * texture.Height; i++)
-                color[i] = Color.Red;
-
-            texture.SetData(color);
+            texture = Program.Engine.Content.Load<Texture2D>("Player/Player");
 
             jumpSound = new SFX("Sounds/Player/jump")
             {
@@ -147,9 +143,15 @@ namespace GameJam.Objects
         private void HandleInput(float deltaTime)
         {
             if (InputManager.IsKeyDown(Keys.Left))
+            {
                 moveX = -1;
+                flip = true;
+            }
             else if (InputManager.IsKeyDown(Keys.Right))
+            {
                 moveX = 1;
+                flip = false;
+            }
             else
                 moveX = 0;
 
@@ -237,12 +239,12 @@ namespace GameJam.Objects
         public override void Draw(SpriteBatch spriteBatch)
         {
             if (!isDead)
-                spriteBatch.Draw(texture, position, Color.White);
+                spriteBatch.Draw(texture, position, null, Color.White, 0, Vector2.Zero, 1, (flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None), 0.0f);
+                //spriteBatch.Draw(texture, position, Color.White);
         }
 
         public override void Dispose()
         {
-            texture.Dispose();
         }
     }
 }

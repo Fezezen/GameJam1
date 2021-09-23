@@ -12,6 +12,9 @@ namespace GameJam.GameStates
         Texture2D background;
         Texture2D backgroundFar;
 
+        Texture2D title;
+        Vector2 titlePos;
+
         Texture2D infoPrompt;
         bool isInfoPromptVisible = false;
         Vector2 infoPosition;
@@ -35,6 +38,7 @@ namespace GameJam.GameStates
             };
 
             infoPosition = new Vector2(Program.Engine.GraphicsDevice.Viewport.Width / 2 - 400f,50);
+            titlePos = new Vector2(Program.Engine.GraphicsDevice.Viewport.Width / 2 - 435/2, 50);
 
             music = Program.Engine.Content.Load<SoundEffect>("Sounds/Music/intro_music");
             musicInstance = music.CreateInstance();
@@ -52,6 +56,8 @@ namespace GameJam.GameStates
 
             infoPrompt = Program.Engine.Content.Load<Texture2D>("Menu/InfoPrompt");
             controlsPrompt = Program.Engine.Content.Load<Texture2D>("Menu/ControlsPrompt");
+
+            title = Program.Engine.Content.Load<Texture2D>("Menu/Title");
         }
 
         public override void UnloadContent()
@@ -93,6 +99,8 @@ namespace GameJam.GameStates
             spriteBatch.End();
 
             spriteBatch.Begin();
+
+            spriteBatch.Draw(title, titlePos, Color.White);
 
             foreach (Button button in buttons)
                 if (button.hover)
